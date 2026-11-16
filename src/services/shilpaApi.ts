@@ -2,9 +2,10 @@
  * SHILPA AI CRAFT GUIDE — Client API Service
  * 
  * Communicates with backend endpoints at /api/shilpa/*.
- * Gracefully and seamlessly falls back to:
- * 1. Direct Groq API client call if VITE_GROQ_API_KEY is configured
- * 2. Grounded local knowledge engine (Verified Odisha Records)
+ * Gracefully integrates direct Groq AI client inference with:
+ * 1. Vite environment variable VITE_GROQ_API_KEY (from .env or build)
+ * 2. Local storage custom override if set by user
+ * 3. Grounded local knowledge engine (Verified Odisha Records fallback)
  * Works 100% offline, on Vercel, and across all browsers.
  */
 
@@ -13,6 +14,146 @@ import { getLocalArtifacts, getLocalDeterministicAnswer, resolveArtifactLocally 
 
 export { getLocalArtifacts, filterArtifacts } from './shilpaLocalRAG';
 
+/**
+ * Returns the currently active Groq API Key.
+ * Priority:
+ * 1. User runtime custom key from localStorage
+ * 2. Injected environment variable VITE_GROQ_API_KEY (from .env)
+ */
+export function getActiveGroqApiKey(): string {
+  if (typeof window !== 'undefined') {
+    const customKey = localStorage.getItem('shilpa_custom_groq_key');
+    if (customKey && customKey.trim().startsWith('gsk_')) {
+      return customKey.trim();
+    }
+  }
+
+  const envKey = (import.meta.env.VITE_GROQ_API_KEY as string | undefined) ||
+                 (import.meta.env.GROQ_API_KEY as string | undefined);
+  if (envKey && envKey.trim().startsWith('gsk_')) {
+    return envKey.trim();
+  }
+
+  return '';
+}
+
+/**
+ * Sets or clears a custom Groq API Key in localStorage (runtime user override).
+ */
+export function setCustomGroqApiKey(key: string): void {
+  if (typeof window !== 'undefined') {
+    const cleanKey = key.trim();
+    if (cleanKey.startsWith('gsk_')) {
+      localStorage.setItem('shilpa_custom_groq_key', cleanKey);
+    } else {
+      localStorage.removeItem('shilpa_custom_groq_key');
+    }
+  }
+}
+
+/**
+ * Cleans raw model output: eliminates raw tables, cleans bullets, removes stray markdown pipes.
+ */
+export function cleanCraftResponse(text: string): string {
+  if (!text) return '';
+
+  const lines = String(text).split('\n');
+  const resultLines: string[] = [];
+  let inTable = false;
+  let tableHeaders: string[] = [];
+  const tableRows: string[][] = [];
+
+  const flushTable = () => {
+    if (tableHeaders.length > 0 && tableRows.length > 0) {
+      tableRows.forEach(row => {
+        if (row.length === 0) return;
+        const mainTitle = row[0];
+        resultLines.push(`• ${mainTitle}`);
+        for (let i = 1; i < row.length; i++) {
+          const header = tableHeaders[i] || '';
+          const cell = row[i];
+          if (cell) {
+            if (header && !/^(craft|name|item|title)$/i.test(header.trim())) {
+              resultLines.push(`  ${header}: ${cell}`);
+            } else {
+              resultLines.push(`  ${cell}`);
+            }
+          }
+        }
+        resultLines.push('');
+      });
+    }
+    tableHeaders = [];
+    tableRows.length = 0;
+    inTable = false;
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    if (/^\|?(\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?$/.test(line)) {
+      inTable = true;
+      continue;
+    }
+
+    if (line.startsWith('|') && line.endsWith('|') && line.includes('|', 1)) {
+      const cells = line
+        .slice(1, -1)
+        .split('|')
+        .map(c => c.trim());
+
+      if (!inTable && tableHeaders.length === 0) {
+        tableHeaders = cells;
+        inTable = true;
+      } else {
+        tableRows.push(cells);
+      }
+      continue;
+    }
+
+    if (inTable || tableHeaders.length > 0) {
+      flushTable();
+    }
+
+    resultLines.push(lines[i]);
+  }
+
+  if (inTable || tableHeaders.length > 0) {
+    flushTable();
+  }
+
+  let cleaned = resultLines.join('\n');
+  cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, '$1');
+  cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');
+  cleaned = cleaned.replace(/^\s*\*\s+/gm, '• ');
+  cleaned = cleaned.replace(/\*/g, '');
+  cleaned = cleaned.replace(/\s*\|\s*/g, ' — ');
+  cleaned = cleaned.replace(/\|/g, '');
+
+  const filteredLines: string[] = [];
+  let skippingUnknown = false;
+  for (const l of cleaned.split('\n')) {
+    const trimmed = l.trim().toLowerCase();
+    if (trimmed.startsWith('what is unknown')) {
+      skippingUnknown = true;
+      continue;
+    }
+    if (skippingUnknown) {
+      if (/^(answer|what the records say|source):?$/i.test(trimmed)) {
+        skippingUnknown = false;
+      } else {
+        continue;
+      }
+    }
+    filteredLines.push(l);
+  }
+
+  return filteredLines.join('\n').trim();
+}
+
+/**
+ * Invokes Groq API directly from the client with grounded artifact context.
+ */
 async function callGroqDirectly(
   apiKey: string,
   userMessage: string,
@@ -61,43 +202,66 @@ Note: A detailed cost breakdown is not available in the current records.
   }
 
   const prompt = `
-You are SHILPA, an AI Craft Guide for authentic Odisha handicrafts and handlooms.
+You are SHILPA, an authoritative AI Craft Guide for authentic Odisha handicrafts and handlooms on the SHILPA SETU platform.
 Answer the patron's question accurately using this verified record:
 ${contextPrompt}
 
 Question: ${userMessage}
-Answer clearly and warmly. If price breakdown is not documented, explain the indicative price range and state that itemized cost breakdown is not documented. Never fabricate costs.
+
+Rules:
+- Answer clearly and warmly in natural standard paragraphs.
+- Demystify traditional craft terms (like Bandha, Ikat, Chitrakar, Tarakasi, Dhokra) respectfully.
+- If price breakdown is not documented, explain the indicative price range and state that a detailed breakdown of materials, labor, finishing, and overhead costs is not documented in public records.
+- Never invent cost figures or artisan claims.
 `.trim();
 
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'openai/gpt-oss-120b',
-      messages: [
-        { role: 'system', content: 'You are SHILPA, an authoritative AI Craft Guide for authentic Odisha crafts.' },
-        ...conversationHistory.slice(-4),
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.2,
-      max_tokens: 600
-    })
-  });
+  // Try primary model (openai/gpt-oss-120b), fall back to llama-3.3-70b-versatile
+  const models = ['openai/gpt-oss-120b', 'llama-3.3-70b-versatile'];
 
-  if (!res.ok) return null;
-  const json = await res.json();
-  const text = json.choices?.[0]?.message?.content || '';
-  if (!text) return null;
+  for (const model of models) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 9000);
 
-  return {
-    answer: text.replace(/\*\*/g, '').replace(/\|/g, ''),
-    sources,
-    limitations: resolved?.type === 'odisha_artifact' ? ['Detailed itemized cost breakdown is not documented in public records.'] : [],
-    modelUsed: 'openai/gpt-oss-120b (Live Groq Inference)'
-  };
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: 'You are SHILPA, an authoritative, culturally respectful AI Craft Guide for authentic Odisha crafts.' },
+            ...conversationHistory.slice(-4),
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2,
+          max_tokens: 600
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        const text = json.choices?.[0]?.message?.content || '';
+        if (text) {
+          return {
+            answer: cleanCraftResponse(text),
+            sources,
+            limitations: resolved?.type === 'odisha_artifact' ? ['Detailed itemized cost breakdown is not documented in public records.'] : [],
+            modelUsed: `${model} (Live Groq AI)`
+          };
+        }
+      }
+    } catch {
+      // Continue to next model or fallback
+    }
+  }
+
+  return null;
 }
 
 export async function askShilpa(
@@ -107,10 +271,10 @@ export async function askShilpa(
 ): Promise<ShilpaApiResponse> {
   const cleanMessage = String(message || '').trim();
 
-  // 1. Try server endpoint first
+  // 1. Try server endpoint first (if backend is active)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
     const response = await fetch('/api/shilpa/chat', {
       method: 'POST',
@@ -135,49 +299,35 @@ export async function askShilpa(
       }
     }
   } catch (err: any) {
-    console.warn('[Shilpa API Client Note]: Backend chat endpoint unreachable.', err?.message);
+    // Backend offline; continue to direct Groq client
   }
 
-  // 2. Direct client Groq API call if VITE_GROQ_API_KEY is available
-  const clientKey = (import.meta.env.VITE_GROQ_API_KEY as string | undefined) || '';
-  if (clientKey && clientKey.startsWith('gsk_')) {
+  // 2. Direct client-side Groq API call with integrated active key
+  const apiKey = getActiveGroqApiKey();
+  if (apiKey) {
     try {
-      const groqRes = await callGroqDirectly(clientKey, cleanMessage, artifactId, conversationHistory);
+      const groqRes = await callGroqDirectly(apiKey, cleanMessage, artifactId, conversationHistory);
       if (groqRes && groqRes.answer) {
         return groqRes;
       }
     } catch (e: any) {
-      console.warn('[Shilpa Direct Groq Note]: Direct Groq call fallback.', e?.message);
+      console.warn('[Shilpa Direct Groq Note]:', e?.message);
     }
   }
 
-  // 3. Resilient fallback: ground answer directly in verified Odisha craft records
+  // 3. Grounded local knowledge fallback (always guaranteed)
   return getLocalDeterministicAnswer(artifactId, cleanMessage);
 }
 
 export async function getShilpaStatus(): Promise<ShilpaStatusResponse | null> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-    const response = await fetch('/api/shilpa/status', { signal: controller.signal });
-    clearTimeout(timeoutId);
-
-    const contentType = response.headers.get('content-type') || '';
-    if (response.ok && contentType.includes('application/json')) {
-      return await response.json();
-    }
-  } catch {
-    // Graceful fallback
-  }
-
-  const clientKey = (import.meta.env.VITE_GROQ_API_KEY as string | undefined) || '';
+  const apiKey = getActiveGroqApiKey();
 
   return {
     status: 'ok',
     assistant: 'SHILPA (AI Craft Guide)',
     tagline: 'Ask SHILPA. Discover the Story Behind Every Craft.',
-    groqConfigured: Boolean(clientKey && clientKey.startsWith('gsk_')),
-    activeModel: clientKey ? 'openai/gpt-oss-120b (Live Groq)' : 'grounded-craft-knowledge (Verified Odisha Records)',
+    groqConfigured: Boolean(apiKey && apiKey.startsWith('gsk_')),
+    activeModel: apiKey ? 'openai/gpt-oss-120b (Live Groq AI)' : 'grounded-craft-knowledge (Verified Odisha Records)',
     environment: 'client'
   };
 }

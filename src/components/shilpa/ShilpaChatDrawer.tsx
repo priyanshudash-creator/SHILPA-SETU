@@ -13,11 +13,19 @@ import {
   ShieldCheck,
   RotateCcw,
   SlidersHorizontal,
-  Layers
+  Layers,
+  KeyRound,
+  Check
 } from 'lucide-react';
 import { useShilpa } from '../../context/ShilpaContext';
 import { ShilpaMessageBubble } from './ShilpaMessageBubble';
-import { getAvailableArtifacts, getLocalArtifacts, filterArtifacts } from '../../services/shilpaApi';
+import { 
+  getAvailableArtifacts, 
+  getLocalArtifacts, 
+  filterArtifacts, 
+  getActiveGroqApiKey, 
+  setCustomGroqApiKey 
+} from '../../services/shilpaApi';
 import { ShilpaArtifactContext } from '../../types/shilpa';
 import logoImg from '../../assets/logo.jpg';
 
@@ -44,6 +52,9 @@ export const ShilpaChatDrawer: React.FC = () => {
   const [showArtifactPicker, setShowArtifactPicker] = useState(false);
   const [artifactList, setArtifactList] = useState<ShilpaArtifactContext[]>(() => getLocalArtifacts());
   const [artifactSearchQuery, setArtifactSearchQuery] = useState('');
+  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [customKeyInput, setCustomKeyInput] = useState('');
+  const [keySavedToast, setKeySavedToast] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -203,6 +214,10 @@ export const ShilpaChatDrawer: React.FC = () => {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#B85C38] bg-[#E8DCCB] px-2 py-0.5 rounded-full">
                   AI Craft Guide
                 </span>
+                <span className="inline-flex items-center gap-1 text-[9px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full font-medium shadow-2xs" title="Live Groq AI Inference Active">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Live AI
+                </span>
               </div>
               <span className="text-[11px] text-[#6B6A63] tracking-tight">
                 Ask SHILPA. Discover the Story Behind Every Craft.
@@ -211,6 +226,16 @@ export const ShilpaChatDrawer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => {
+                setCustomKeyInput(getActiveGroqApiKey());
+                setShowKeyModal(!showKeyModal);
+              }}
+              className="p-2 text-[#78816A] hover:text-[#B85C38] hover:bg-[#FAF8F5] rounded-lg transition-colors"
+              title="Groq AI API Key Configuration"
+            >
+              <KeyRound className="w-4 h-4" />
+            </button>
             <button
               onClick={clearChat}
               className="p-2 text-[#78816A] hover:text-[#B85C38] hover:bg-[#FAF8F5] rounded-lg transition-colors"
@@ -227,6 +252,76 @@ export const ShilpaChatDrawer: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* API Key Configuration Dropdown Modal */}
+        {showKeyModal && (
+          <div className="p-4 bg-white border-b border-[#E5DED3] animate-fade-in shadow-inner space-y-2.5 shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#B85C38]" />
+                <h4 className="text-xs font-bold text-[#244C3A]">Groq AI API Key Configuration</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowKeyModal(false)}
+                className="text-[#78816A] hover:text-[#252722] p-1 rounded-md"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <p className="text-[11px] text-[#6B6A63] leading-relaxed">
+              Your API key is active. You can enter or update your Groq key below (free from{' '}
+              <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" className="text-[#B85C38] underline font-medium">
+                console.groq.com
+              </a>):
+            </p>
+            <div className="flex items-center gap-2">
+              <input
+                type="password"
+                placeholder="gsk_..."
+                value={customKeyInput}
+                onChange={e => setCustomKeyInput(e.target.value)}
+                className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38]"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setCustomGroqApiKey(customKeyInput);
+                  setShowKeyModal(false);
+                  setKeySavedToast(true);
+                  setTimeout(() => setKeySavedToast(false), 3000);
+                }}
+                className="px-3 py-1.5 text-xs font-semibold bg-[#244C3A] text-white rounded-lg hover:bg-[#1a382b] transition-colors"
+              >
+                Save
+              </button>
+              {customKeyInput && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomGroqApiKey('');
+                    setCustomKeyInput('');
+                  }}
+                  className="px-2 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200"
+                  title="Reset to default key"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            <div className="text-[10px] text-[#78816A] flex items-center justify-between">
+              <span>Status: {getActiveGroqApiKey() ? '🟢 Groq AI Active (openai/gpt-oss-120b)' : '⚪ Grounded Local Knowledge Mode'}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Key Saved Feedback Toast */}
+        {keySavedToast && (
+          <div className="px-4 py-2 bg-emerald-50 border-b border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-fade-in shrink-0 font-medium">
+            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>Groq API Key successfully updated in frontend browser session!</span>
+          </div>
+        )}
 
         {/* Selected Artifact Context Banner */}
         <div className="px-4 py-2.5 bg-[#F4EFE6] border-b border-[#E5DED3] flex items-center justify-between gap-3 shrink-0">

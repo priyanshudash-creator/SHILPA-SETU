@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import type { Plugin } from 'vite'
 
 function shilpaApiDevPlugin(): Plugin {
@@ -28,14 +28,22 @@ function shilpaApiDevPlugin(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss(), shilpaApiDevPlugin()],
-  server: {
-    proxy: {
-      // Fallback proxy if external backend is started on 3001
-      '/api/external': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const groqKey = env.VITE_GROQ_API_KEY || env.GROQ_API_KEY || ''
+
+  return {
+    plugins: [react(), tailwindcss(), shilpaApiDevPlugin()],
+    define: {
+      'import.meta.env.VITE_GROQ_API_KEY': JSON.stringify(groqKey)
+    },
+    server: {
+      proxy: {
+        // Fallback proxy if external backend is started on 3001
+        '/api/external': {
+          target: 'http://localhost:3001',
+          changeOrigin: true
+        }
       }
     }
   }
