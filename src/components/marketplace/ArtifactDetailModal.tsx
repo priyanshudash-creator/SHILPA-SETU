@@ -81,37 +81,37 @@ export const ArtifactDetailModal: React.FC<ArtifactDetailModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-2 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade-in safe-pb">
       {/* Backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Dialog */}
-      <div className="relative bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-hidden shadow-2xl border border-[#E5DED3] z-10 flex flex-col my-auto">
+      <div className="relative bg-white rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[94vh] sm:max-h-[92vh] overflow-hidden shadow-2xl border border-[#E5DED3] z-10 flex flex-col my-auto">
         
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-[#E5DED3] bg-[#FAF8F5] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#B85C38]">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[#E5DED3] bg-[#FAF8F5] flex items-center justify-between shrink-0 gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#B85C38] shrink-0">
               {artifact.category}
             </span>
-            <span className="text-xs text-[#78816A]">•</span>
-            <span className="text-xs font-medium text-[#244C3A] flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-[#B85C38]" />
-              {artifact.district} District, Odisha
+            <span className="text-xs text-[#78816A] shrink-0">•</span>
+            <span className="text-[11px] sm:text-xs font-medium text-[#244C3A] flex items-center gap-1 truncate">
+              <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B85C38] shrink-0" />
+              <span className="truncate">{artifact.district} District</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <button
               onClick={handleShare}
-              className="p-2 text-[#6B6A63] hover:text-[#252722] hover:bg-white rounded-full transition-colors"
+              className="p-1.5 sm:p-2 text-[#6B6A63] hover:text-[#252722] hover:bg-white rounded-full transition-colors cursor-pointer"
               title="Share craft"
             >
               <Share2 className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-[#6B6A63] hover:text-[#252722] hover:bg-white rounded-full transition-colors"
+              className="p-1.5 sm:p-2 text-[#6B6A63] hover:text-[#252722] hover:bg-white rounded-full transition-colors cursor-pointer"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -120,8 +120,8 @@ export const ArtifactDetailModal: React.FC<ArtifactDetailModalProps> = ({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="overflow-y-auto p-6 sm:p-8 flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="overflow-y-auto p-4 sm:p-8 flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-start">
             
             {/* Left Column: Imagery & Visual Highlights */}
             <div className="space-y-4">
@@ -359,40 +359,42 @@ export const ArtifactDetailModal: React.FC<ArtifactDetailModalProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-[#E5DED3] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="pt-4 border-t border-[#E5DED3] flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 px-5 bg-[#B85C38] hover:bg-[#9E4928] text-white rounded-xl text-sm font-semibold transition-colors shadow-xs"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 px-5 bg-[#B85C38] hover:bg-[#9E4928] text-white rounded-xl text-sm font-semibold transition-colors shadow-xs cursor-pointer active:scale-95"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span>Add to Inquiry Bag</span>
                 </button>
 
-                <button
-                  onClick={() => toggleWishlist(artifact.id)}
-                  className={`p-3 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors ${
-                    wishlisted
-                      ? 'border-[#B85C38] bg-[#B85C38] text-white'
-                      : 'border-[#E5DED3] bg-white hover:bg-[#FAF8F5] text-[#252722]'
-                  }`}
-                  title={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-                >
-                  <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
-                  <span className="hidden sm:inline">{wishlisted ? 'Saved' : 'Wishlist'}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => toggleWishlist(artifact.id)}
+                    className={`flex-1 sm:flex-initial p-2.5 sm:p-3 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                      wishlisted
+                        ? 'border-[#B85C38] bg-[#B85C38] text-white'
+                        : 'border-[#E5DED3] bg-white hover:bg-[#FAF8F5] text-[#252722]'
+                    }`}
+                    title={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                  >
+                    <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
+                    <span>{wishlisted ? 'Saved' : 'Wishlist'}</span>
+                  </button>
 
-                <button
-                  onClick={() => isCompared ? removeFromCompare(artifact.id) : addToCompare(artifact.id)}
-                  className={`p-3 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors ${
-                    isCompared
-                      ? 'border-[#244C3A] bg-[#244C3A] text-white'
-                      : 'border-[#E5DED3] bg-white hover:bg-[#FAF8F5] text-[#252722]'
-                  }`}
-                  title={isCompared ? 'Remove from comparison' : 'Compare craft'}
-                >
-                  <Scale className="w-4 h-4" />
-                  <span className="hidden sm:inline">{isCompared ? 'Comparing' : 'Compare'}</span>
-                </button>
+                  <button
+                    onClick={() => isCompared ? removeFromCompare(artifact.id) : addToCompare(artifact.id)}
+                    className={`flex-1 sm:flex-initial p-2.5 sm:p-3 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                      isCompared
+                        ? 'border-[#244C3A] bg-[#244C3A] text-white'
+                        : 'border-[#E5DED3] bg-white hover:bg-[#FAF8F5] text-[#252722]'
+                    }`}
+                    title={isCompared ? 'Remove from comparison' : 'Compare craft'}
+                  >
+                    <Scale className="w-4 h-4" />
+                    <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                  </button>
+                </div>
               </div>
 
             </div>

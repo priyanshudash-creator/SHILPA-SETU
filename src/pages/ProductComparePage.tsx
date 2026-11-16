@@ -59,16 +59,23 @@ export const ProductComparePage: React.FC = () => {
       {/* Comparison Table / Matrix */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {comparedProducts.length > 0 ? (
-          <div className="overflow-x-auto">
-            <div className="min-w-[640px] bg-white border border-[#E5DED3] rounded-2xl shadow-xs overflow-hidden">
-              
-              <table className="w-full text-left text-xs border-collapse">
-                <tbody>
-                  {/* Row: Product Header & Image */}
-                  <tr className="border-b border-[#E5DED3] bg-[#FAF8F5]">
-                    <td className="p-4 sm:p-5 w-48 font-serif font-bold text-sm text-[#244C3A] align-top">
-                      Craft Artifact
-                    </td>
+          <div>
+            {/* Mobile swipe helper badge */}
+            <div className="sm:hidden flex items-center justify-between text-xs text-[#244C3A] bg-[#FAF8F5] p-3 rounded-xl border border-[#E5DED3] mb-3">
+              <span className="font-medium">Swipe horizontally to compare specs</span>
+              <span className="font-bold text-[#B85C38]">← Scroll →</span>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-[#E5DED3] shadow-xs bg-white overscroll-x-contain">
+              <div className="min-w-[620px]">
+                
+                <table className="w-full text-left text-xs border-collapse">
+                  <tbody>
+                    {/* Row: Product Header & Image */}
+                    <tr className="border-b border-[#E5DED3] bg-[#FAF8F5]">
+                      <td className="p-4 sm:p-5 w-40 sm:w-48 font-serif font-bold text-sm text-[#244C3A] align-top sticky left-0 bg-[#FAF8F5] z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
+                        Craft Artifact
+                      </td>
                     {comparedProducts.map((p) => (
                       <td key={p.id} className="p-4 sm:p-5 w-64 align-top border-l border-[#E5DED3]">
                         <div className="relative group">
@@ -122,7 +129,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Geographic Origin */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Geographic Origin
                     </td>
                     {comparedProducts.map((p) => (
@@ -138,7 +145,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Verification Status */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Artisan Verification
                     </td>
                     {comparedProducts.map((p) => (
@@ -151,7 +158,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: 3D Digital Model */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       3D Interactive Model
                     </td>
                     {comparedProducts.map((p) => (
@@ -170,7 +177,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Key Materials */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Constituent Materials
                     </td>
                     {comparedProducts.map((p) => (
@@ -187,7 +194,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Dimensions & Weight */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Dimensions / Weight
                     </td>
                     {comparedProducts.map((p) => (
@@ -201,7 +208,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Price Breakdown Summary */}
                   <tr className="border-b border-[#E5DED3]">
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Indicative Cost Share
                     </td>
                     {comparedProducts.map((p) => (
@@ -227,7 +234,7 @@ export const ProductComparePage: React.FC = () => {
 
                   {/* Row: Stock & Availability */}
                   <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5]/60">
+                    <td className="p-4 sm:p-5 font-semibold text-[#6B6A63] bg-[#FAF8F5] sticky left-0 z-10 shadow-[2px_0_6px_rgba(0,0,0,0.04)]">
                       Inventory Availability
                     </td>
                     {comparedProducts.map((p) => (
@@ -243,6 +250,7 @@ export const ProductComparePage: React.FC = () => {
 
             </div>
           </div>
+        </div>
         ) : (
           <div className="bg-white border border-[#E5DED3] rounded-2xl p-12 text-center max-w-lg mx-auto shadow-xs">
             <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E5DED3] text-[#244C3A] flex items-center justify-center mx-auto mb-4">

@@ -23,6 +23,36 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Touch action optimization for mobile buttons and links */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Mobile safe area insets */
+.safe-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-pt {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Hide scrollbar for horizontal swipe strips on touch devices */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Subtle architectural grid from the Lovable hero design */

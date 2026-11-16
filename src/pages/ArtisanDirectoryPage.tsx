@@ -77,7 +77,7 @@ export const ArtisanDirectoryPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by artisan name, studio, or village..."
-              className="w-full pl-9 pr-8 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-sm text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
+              className="w-full pl-9 pr-8 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-sm text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
             />
             {searchQuery && (
               <button
@@ -90,12 +90,12 @@ export const ArtisanDirectoryPage: React.FC = () => {
           </div>
 
           {/* District & Craft Selectors */}
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full md:w-auto">
             {/* District dropdown */}
             <select
               value={selectedDistrict}
               onChange={(e) => setSelectedDistrict(e.target.value)}
-              className="bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-hidden focus:border-[#B85C38]"
+              className="flex-1 sm:flex-none bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-lg px-3 py-2.5 text-base sm:text-xs font-medium focus:outline-hidden focus:border-[#B85C38]"
             >
               <option value="all">All Odisha Districts</option>
               {ODISHA_DISTRICTS.map((d) => (
@@ -107,7 +107,7 @@ export const ArtisanDirectoryPage: React.FC = () => {
             <select
               value={selectedCraft}
               onChange={(e) => setSelectedCraft(e.target.value)}
-              className="bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-hidden focus:border-[#B85C38]"
+              className="flex-1 sm:flex-none bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-lg px-3 py-2.5 text-base sm:text-xs font-medium focus:outline-hidden focus:border-[#B85C38]"
             >
               <option value="all">All Craft Traditions</option>
               {CRAFT_CATEGORIES.map((c) => (
@@ -128,11 +128,11 @@ export const ArtisanDirectoryPage: React.FC = () => {
         </div>
 
         {/* Results Count & Sample Notice */}
-        <div className="flex items-center justify-between gap-4 mb-6 text-xs text-[#6B6A63]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 mb-6 text-xs text-[#6B6A63]">
           <span>
             Found <strong className="text-[#244C3A] font-bold">{filteredArtisans.length}</strong> master artisans
           </span>
-          <span className="text-[11px] bg-[#E8DCCB] text-[#244C3A] px-2.5 py-0.5 rounded-full font-medium">
+          <span className="self-start sm:self-auto text-[11px] bg-[#E8DCCB] text-[#244C3A] px-2.5 py-0.5 rounded-full font-medium">
             Verified Sample Demonstration Profiles
           </span>
         </div>

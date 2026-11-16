@@ -195,14 +195,15 @@ export const AdminDashboardPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
           
           {/* Admin Sidebar */}
-          <aside className="w-full md:w-64 lg:w-72 shrink-0 bg-white border border-[#E5DED3] rounded-2xl p-4 shadow-xs sticky top-24">
-            <div className="pb-3 border-b border-[#E5DED3] mb-3">
+          <aside className="w-full md:w-64 lg:w-72 shrink-0 bg-white border border-[#E5DED3] rounded-2xl p-4 shadow-xs md:sticky md:top-24">
+            <div className="pb-2 md:pb-3 border-b border-[#E5DED3] mb-3 flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B6A63]">
                 Admin Navigation
               </span>
+              <span className="text-[10px] text-[#6B6A63] md:hidden">Swipe tabs →</span>
             </div>
 
-            <nav className="space-y-1">
+            <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar gap-1.5 md:gap-0 md:space-y-1 pb-1 md:pb-0">
               {navItems.map((item) => {
                 const IconComp = item.icon
                 const isActive = subView === item.id || (item.id === 'artisans' && subView === 'artisan-detail')
@@ -210,13 +211,13 @@ export const AdminDashboardPage: React.FC = () => {
                   <Link
                     key={item.id}
                     to={item.path}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    className={`whitespace-nowrap shrink-0 md:shrink flex items-center justify-between gap-2 md:gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
                         ? 'bg-[#244C3A] text-white shadow-xs'
-                        : 'text-[#252722] hover:bg-[#FAF8F5]'
+                        : 'text-[#252722] bg-[#FAF8F5] md:bg-transparent hover:bg-[#FAF8F5]'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <IconComp className={`w-4 h-4 ${isActive ? 'text-[#B85C38]' : 'text-[#6B6A63]'}`} />
                       <span>{item.label}</span>
                     </div>
@@ -230,7 +231,7 @@ export const AdminDashboardPage: React.FC = () => {
               })}
             </nav>
 
-            <div className="mt-6 pt-4 border-t border-[#E5DED3] text-[11px] text-[#6B6A63] space-y-1">
+            <div className="hidden md:block mt-6 pt-4 border-t border-[#E5DED3] text-[11px] text-[#6B6A63] space-y-1">
               <p>
                 <strong>Official Directorate:</strong> Verification decisions and evidence checks are recorded in official moderation registers.
               </p>

@@ -38,23 +38,23 @@ export const HomePage: React.FC = () => {
               EXPERIENCE THE CRAFT, UNDERSTAND THE VALUE
             </p>
 
-            {/* Main Headline (Playfair Display, Forest Green, 2 Lines on Desktop) */}
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-bold text-[#244C3A] leading-[1.12] tracking-tight mb-6 md:mb-7">
+            {/* Main Headline (Playfair Display, Forest Green) */}
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[64px] font-bold text-[#244C3A] leading-[1.18] sm:leading-[1.12] tracking-tight mb-4 sm:mb-6 md:mb-7">
               Every Craft Has a Story.<br className="hidden sm:inline" />
               Every Story Has a Value.
             </h1>
 
             {/* Hero Description */}
-            <p className="text-base sm:text-lg text-[#252722] leading-relaxed max-w-2xl font-normal mb-8 md:mb-9">
+            <p className="text-sm sm:text-base md:text-lg text-[#252722] leading-relaxed max-w-2xl font-normal mb-6 sm:mb-8 md:mb-9">
               Discover India's traditional craftsmanship through immersive 3D experiences, authentic artisan stories, and transparent product pricing — from Sambalpuri handloom to Pattachitra and Dhokra.
             </p>
 
             {/* Hero Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 mb-12 md:mb-14">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-12 md:mb-14">
               {/* Primary: Explore Crafts */}
               <Link
                 to="/marketplace"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#B85C38] hover:bg-[#9E4928] text-white font-medium text-sm sm:text-base px-6 py-3.5 rounded-lg shadow-sm transition-all hover:translate-y-[-1px]"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#B85C38] hover:bg-[#9E4928] text-white font-semibold text-sm sm:text-base px-6 py-3.5 rounded-xl shadow-sm transition-all hover:translate-y-[-1px] cursor-pointer active:scale-95 text-center"
               >
                 <span>Explore Crafts</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.2]" />
@@ -63,10 +63,10 @@ export const HomePage: React.FC = () => {
               {/* Secondary: Enter the 3D Showroom */}
               <Link
                 to="/showroom"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#FAF8F5] hover:bg-white border border-[#E5DED3] hover:border-[#244C3A] text-[#244C3A] font-medium text-sm sm:text-base px-6 py-3.5 rounded-lg transition-all"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#FAF8F5] hover:bg-white border border-[#E5DED3] hover:border-[#244C3A] text-[#244C3A] font-semibold text-sm sm:text-base px-6 py-3.5 rounded-xl transition-all cursor-pointer active:scale-95 text-center"
               >
                 <Box className="w-4 h-4 stroke-[2] text-[#244C3A]" />
-                <span>Enter the 3D Showroom</span>
+                <span>Enter 3D Showroom</span>
               </Link>
             </div>
           </div>
@@ -77,14 +77,14 @@ export const HomePage: React.FC = () => {
               <img
                 src={heroCraftImg}
                 alt="Authentic Indian craft materials: Sambalpuri handloom ikat fabric draped alongside a terracotta water pot under natural sunlight"
-                className="w-full h-auto aspect-16/9 sm:aspect-16/8 object-cover"
+                className="w-full h-auto aspect-4/3 sm:aspect-16/9 md:aspect-16/8 object-cover"
                 loading="eager"
               />
               
-              {/* Subtle corner badge for craft origin */}
-              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-black/60 backdrop-blur-md text-white text-xs px-3.5 py-1.5 rounded-lg border border-white/10 hidden sm:flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#B85C38]" />
-                <span>Sambalpuri Ikat & Terracotta • Odisha Craft Traditions</span>
+              {/* Craft origin badge - now visible and responsive on all screens */}
+              <div className="absolute bottom-2.5 left-2.5 sm:bottom-6 sm:left-6 bg-black/70 backdrop-blur-md text-white text-[10px] sm:text-xs px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg border border-white/10 flex items-center gap-1.5 sm:gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#B85C38] shrink-0" />
+                <span className="truncate">Sambalpuri Ikat & Terracotta • Odisha</span>
               </div>
             </div>
           </div>
@@ -223,21 +223,21 @@ export const HomePage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black/40 p-4">
+              <div className="relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black/40 p-2 sm:p-4">
                 <img
                   src={heroCraftImg}
                   alt="3D Showroom Preview"
-                  className="w-full h-80 object-cover rounded-xl"
+                  className="w-full h-64 sm:h-80 object-cover rounded-xl"
                 />
                 <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/60 rounded-xl pointer-events-none" />
-                <div className="absolute bottom-8 left-8 right-8 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 flex items-center justify-between">
+                <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 bg-black/85 backdrop-blur-md p-3 sm:p-4 rounded-xl border border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
                   <div>
-                    <span className="text-xs text-[#E8DCCB] block">Interactive Replica</span>
-                    <h4 className="text-white font-serif font-bold text-sm">Sambalpuri Bomkai Handloom</h4>
+                    <span className="text-[10px] sm:text-xs text-[#E8DCCB] block">Interactive 3D Replica</span>
+                    <h4 className="text-white font-serif font-bold text-xs sm:text-sm">Sambalpuri Bomkai Handloom</h4>
                   </div>
                   <Link
                     to="/showroom"
-                    className="px-3 py-1.5 rounded bg-[#B85C38] text-white text-xs font-medium"
+                    className="px-3 py-1.5 rounded-lg bg-[#B85C38] hover:bg-[#9E4928] text-white text-xs font-semibold shrink-0 cursor-pointer transition-colors"
                   >
                     Rotate & View 3D
                   </Link>

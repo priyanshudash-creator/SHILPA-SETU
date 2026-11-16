@@ -134,7 +134,7 @@ export const CheckoutPage: React.FC = () => {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
+                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-base sm:text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
                         errors.fullName ? 'border-red-500' : 'border-[#E5DED3]'
                       }`}
                     />
@@ -150,7 +150,7 @@ export const CheckoutPage: React.FC = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
+                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-base sm:text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
                         errors.email ? 'border-red-500' : 'border-[#E5DED3]'
                       }`}
                     />
@@ -166,7 +166,7 @@ export const CheckoutPage: React.FC = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
+                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-base sm:text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
                         errors.phone ? 'border-red-500' : 'border-[#E5DED3]'
                       }`}
                     />
@@ -176,7 +176,7 @@ export const CheckoutPage: React.FC = () => {
               </div>
 
               {/* Shipping Address */}
-              <div className="bg-white border border-[#E5DED3] rounded-2xl p-6 shadow-xs">
+              <div className="bg-white border border-[#E5DED3] rounded-2xl p-4 sm:p-6 shadow-xs">
                 <h3 className="font-serif font-bold text-base text-[#244C3A] mb-4">
                   2. Shipping Destination
                 </h3>
@@ -191,7 +191,7 @@ export const CheckoutPage: React.FC = () => {
                       name="street"
                       value={formData.street}
                       onChange={handleInputChange}
-                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
+                      className={`w-full p-2.5 bg-[#FAF8F5] border rounded-lg text-base sm:text-xs text-[#252722] focus:outline-hidden focus:border-[#B85C38] ${
                         errors.street ? 'border-red-500' : 'border-[#E5DED3]'
                       }`}
                     />
@@ -207,7 +207,7 @@ export const CheckoutPage: React.FC = () => {
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs text-[#252722]"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs text-[#252722]"
                     />
                   </div>
 
@@ -220,7 +220,7 @@ export const CheckoutPage: React.FC = () => {
                       name="district"
                       value={formData.district}
                       onChange={handleInputChange}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs text-[#252722]"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs text-[#252722]"
                     />
                   </div>
 
@@ -233,7 +233,7 @@ export const CheckoutPage: React.FC = () => {
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs text-[#252722]"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs text-[#252722]"
                     />
                   </div>
 
@@ -246,7 +246,7 @@ export const CheckoutPage: React.FC = () => {
                       name="postalCode"
                       value={formData.postalCode}
                       onChange={handleInputChange}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs text-[#252722]"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs text-[#252722]"
                     />
                   </div>
                 </div>

@@ -220,10 +220,10 @@ export const AccountPage: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#E5DED3] mb-8 gap-6 text-sm font-semibold">
+        <div className="flex border-b border-[#E5DED3] mb-8 gap-4 sm:gap-6 text-xs sm:text-sm font-semibold overflow-x-auto no-scrollbar pb-1">
           <button
             onClick={() => setActiveTab('profile')}
-            className={`pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
+            className={`whitespace-nowrap shrink-0 pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
               activeTab === 'profile'
                 ? 'border-[#B85C38] text-[#B85C38]'
                 : 'border-transparent text-[#6B6A63] hover:text-[#252722]'
@@ -235,7 +235,7 @@ export const AccountPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('orders')}
-            className={`pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
+            className={`whitespace-nowrap shrink-0 pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
               activeTab === 'orders'
                 ? 'border-[#B85C38] text-[#B85C38]'
                 : 'border-transparent text-[#6B6A63] hover:text-[#252722]'
@@ -247,7 +247,7 @@ export const AccountPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('wishlist')}
-            className={`pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
+            className={`whitespace-nowrap shrink-0 pb-3 transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer ${
               activeTab === 'wishlist'
                 ? 'border-[#B85C38] text-[#B85C38]'
                 : 'border-transparent text-[#6B6A63] hover:text-[#252722]'
@@ -512,7 +512,7 @@ export const AccountPage: React.FC = () => {
                   required
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
                 />
               </div>
 
@@ -526,7 +526,7 @@ export const AccountPage: React.FC = () => {
                     required
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
                   />
                 </div>
                 <div>
@@ -537,7 +537,7 @@ export const AccountPage: React.FC = () => {
                     type="tel"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
                   />
                 </div>
               </div>
@@ -551,11 +551,11 @@ export const AccountPage: React.FC = () => {
                   value={editStreet}
                   onChange={(e) => setEditStreet(e.target.value)}
                   placeholder="Plot/Flat, Street name, Landmark"
-                  className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
+                  className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-[#252722] mb-1">
                     City / Town
@@ -564,7 +564,7 @@ export const AccountPage: React.FC = () => {
                     type="text"
                     value={editCity}
                     onChange={(e) => setEditCity(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] outline-none"
+                    className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] outline-none"
                   />
                 </div>
                 <div>
@@ -574,7 +574,7 @@ export const AccountPage: React.FC = () => {
                   <select
                     value={editDistrict}
                     onChange={(e) => setEditDistrict(e.target.value)}
-                    className="w-full px-2 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] outline-none"
+                    className="w-full px-2 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] outline-none"
                   >
                     <option value="">Select...</option>
                     {ALL_30_ODISHA_DISTRICTS.map((d) => (
@@ -590,7 +590,7 @@ export const AccountPage: React.FC = () => {
                     type="text"
                     value={editPostalCode}
                     onChange={(e) => setEditPostalCode(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] outline-none"
+                    className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] outline-none"
                   />
                 </div>
               </div>

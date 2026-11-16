@@ -613,7 +613,7 @@ export const BlenderShowroomViewer: React.FC<BlenderShowroomViewerProps> = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`relative w-full h-[calc(100vh-140px)] min-h-[640px] max-h-[920px] bg-[#121513] rounded-3xl overflow-hidden border border-[#78816A]/30 shadow-2xl select-none flex flex-col justify-between ${className}`}
+      className={`relative w-full h-[62vh] sm:h-[72vh] md:h-[calc(100vh-140px)] min-h-[400px] sm:min-h-[500px] md:min-h-[640px] max-h-[920px] bg-[#121513] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#78816A]/30 shadow-2xl select-none flex flex-col justify-between ${className}`}
     >
       {/* Hidden File Input for Blender Model (.glb / .gltf) */}
       <input
@@ -625,29 +625,30 @@ export const BlenderShowroomViewer: React.FC<BlenderShowroomViewerProps> = ({
       />
 
       {/* Top Overlay Bar */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+      <div className="absolute top-2.5 left-2.5 right-2.5 sm:top-4 sm:left-4 sm:right-4 z-20 flex flex-wrap items-center justify-between gap-2 sm:gap-3 pointer-events-none">
         
         {/* Left: Model Title & Status Badge */}
-        <div className="flex items-center gap-2.5 pointer-events-auto">
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white shadow-lg">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#B85C38] animate-pulse" />
-            <span className="font-serif font-bold text-xs sm:text-sm tracking-wide text-[#F8F5EF]">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 pointer-events-auto min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white shadow-lg min-w-0">
+            <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#B85C38] animate-pulse shrink-0" />
+            <span className="font-serif font-bold text-xs sm:text-sm tracking-wide text-[#F8F5EF] truncate max-w-[130px] sm:max-w-none">
               {modelName}
             </span>
             {isCustomModelLoaded ? (
-              <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40 flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" />
-                Blender Model Active
+              <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded-full border border-emerald-500/40 flex items-center gap-1 shrink-0">
+                <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <span className="hidden xs:inline">Blender Active</span>
+                <span className="xs:hidden">3D</span>
               </span>
             ) : (
-              <span className="text-[10px] font-semibold text-[#D4A373] bg-[#244C3A]/70 px-2 py-0.5 rounded-full border border-[#78816A]/40">
-                Heritage 3D Pavilion
+              <span className="text-[9px] sm:text-[10px] font-semibold text-[#D4A373] bg-[#244C3A]/70 px-1.5 py-0.5 rounded-full border border-[#78816A]/40 shrink-0">
+                Pavilion
               </span>
             )}
           </div>
 
           {modelStats && (
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[11px] text-[#E8DCCB]">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[11px] text-[#E8DCCB]">
               <span>{modelStats.meshes} Meshes</span>
               <span className="text-white/30">•</span>
               <span>{(modelStats.triangles / 1000).toFixed(1)}k Polygons</span>
@@ -656,15 +657,16 @@ export const BlenderShowroomViewer: React.FC<BlenderShowroomViewerProps> = ({
         </div>
 
         {/* Right: Lighting, Controls & Upload Button */}
-        <div className="flex items-center gap-2 pointer-events-auto">
+        <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
           {/* Load Blender Model Button */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#B85C38] hover:bg-[#9E4928] text-white text-xs font-semibold shadow-lg transition-all hover:scale-103"
+            className="flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#B85C38] hover:bg-[#9E4928] text-white text-[11px] sm:text-xs font-semibold shadow-lg transition-all hover:scale-103 cursor-pointer"
             title="Upload your 3D model exported from Blender (.glb / .gltf)"
           >
-            <Upload className="w-3.5 h-3.5" />
-            <span>Load Blender 3D Model</span>
+            <Upload className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span className="hidden sm:inline">Load Blender Model</span>
+            <span className="sm:hidden">Upload 3D</span>
           </button>
 
           {/* Lighting Mode Selector */}
@@ -743,44 +745,51 @@ export const BlenderShowroomViewer: React.FC<BlenderShowroomViewerProps> = ({
       )}
 
       {/* Bottom Interactive Control Toolbar */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+      <div className="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-4 sm:left-4 sm:right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         
         {/* Left: Camera & Playback Tools */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15 pointer-events-auto">
+        <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15 pointer-events-auto">
           {/* Auto Rotate Orbit */}
           <button
             onClick={() => setIsAutoRotating(!isAutoRotating)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
               isAutoRotating
                 ? 'bg-[#B85C38] text-white shadow-xs'
                 : 'text-white/80 hover:text-white hover:bg-white/10'
             }`}
             title="Auto-rotate 360°"
           >
-            <RotateCcw className={`w-3.5 h-3.5 ${isAutoRotating ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }} />
+            <RotateCcw className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isAutoRotating ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }} />
             <span className="hidden sm:inline">360° Orbit</span>
+            <span className="sm:hidden">Orbit</span>
           </button>
 
           {/* Reset Camera */}
           <button
             onClick={handleResetCamera}
-            className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1 sm:p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             title="Reset Camera View"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
           </button>
 
           {/* Animation Play/Pause (if model has animations) */}
           {hasAnimations && (
             <button
               onClick={() => setIsPlayingAnimation(!isPlayingAnimation)}
-              className="px-2.5 py-1.5 rounded-xl text-xs text-white/90 hover:bg-white/10 flex items-center gap-1 transition-colors"
+              className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs text-white/90 hover:bg-white/10 flex items-center gap-1 transition-colors cursor-pointer"
               title="Play/Pause Blender Animation"
             >
               {isPlayingAnimation ? <Pause className="w-3 h-3 text-amber-400" /> : <Play className="w-3 h-3 text-emerald-400" />}
               <span className="hidden sm:inline">{isPlayingAnimation ? 'Pause Anim' : 'Play Anim'}</span>
             </button>
           )}
+        </div>
+
+        {/* Mobile touch hint */}
+        <div className="md:hidden flex items-center gap-1 text-[10px] text-[#E8DCCB]/90 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/10 pointer-events-auto">
+          <Eye className="w-3 h-3 text-[#B85C38]" />
+          <span>Drag to orbit</span>
         </div>
 
         {/* Center / Right: Interaction Guide */}

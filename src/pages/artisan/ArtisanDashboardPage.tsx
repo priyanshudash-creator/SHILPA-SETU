@@ -239,7 +239,7 @@ export const ArtisanDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
             <Link
               to={`/artisans/${currentArtisan.id}`}
               className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#E8DCCB] hover:text-white flex items-center gap-1.5 transition-colors"
@@ -273,14 +273,15 @@ export const ArtisanDashboardPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
           
           {/* Sidebar Navigation - Always on Left */}
-          <aside className="w-full md:w-64 lg:w-72 shrink-0 bg-white border border-[#E5DED3] rounded-2xl p-4 shadow-xs sticky top-24">
-            <div className="pb-3 border-b border-[#E5DED3] mb-3">
+          <aside className="w-full md:w-64 lg:w-72 shrink-0 bg-white border border-[#E5DED3] rounded-2xl p-4 shadow-xs md:sticky md:top-24">
+            <div className="pb-2 md:pb-3 border-b border-[#E5DED3] mb-3 flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B6A63]">
                 Artisan Studio Navigation
               </span>
+              <span className="text-[10px] text-[#6B6A63] md:hidden">Swipe tabs →</span>
             </div>
 
-            <nav className="space-y-1">
+            <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar gap-1.5 md:gap-0 md:space-y-1 pb-1 md:pb-0">
               {navItems.map((item) => {
                 const IconComp = item.icon
                 const isActive = subView === item.id || (item.id === 'products' && subView === 'products-edit')
@@ -288,10 +289,10 @@ export const ArtisanDashboardPage: React.FC = () => {
                   <Link
                     key={item.id}
                     to={item.path}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    className={`whitespace-nowrap shrink-0 md:shrink flex items-center gap-2 md:gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
                         ? 'bg-[#244C3A] text-white shadow-xs'
-                        : 'text-[#252722] hover:bg-[#FAF8F5]'
+                        : 'text-[#252722] bg-[#FAF8F5] md:bg-transparent hover:bg-[#FAF8F5]'
                     }`}
                   >
                     <IconComp className={`w-4 h-4 ${isActive ? 'text-[#B85C38]' : 'text-[#6B6A63]'}`} />
@@ -301,7 +302,7 @@ export const ArtisanDashboardPage: React.FC = () => {
               })}
             </nav>
 
-            <div className="mt-6 pt-4 border-t border-[#E5DED3] text-[11px] text-[#6B6A63] space-y-1">
+            <div className="hidden md:block mt-6 pt-4 border-t border-[#E5DED3] text-[11px] text-[#6B6A63] space-y-1">
               <p><strong>Live Studio:</strong> All catalog updates reflect immediately across marketplace listings.</p>
             </div>
           </aside>
@@ -641,7 +642,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                         type="text"
                         value={productForm.name}
                         onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         required
                         placeholder="e.g. Sambalpuri Natural Dye Silk Dupatta"
                       />
@@ -651,7 +652,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                       <select
                         value={productForm.category}
                         onChange={(e) => setProductForm({ ...productForm, category: e.target.value as CraftCategory })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         required
                       >
                         {CRAFT_CATEGORIES.map((cat) => (
@@ -670,7 +671,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                         type="number"
                         value={productForm.price}
                         onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs font-bold text-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs font-bold text-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none"
                         required
                       />
                     </div>
@@ -681,7 +682,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                         min="1"
                         value={productForm.stock}
                         onChange={(e) => setProductForm({ ...productForm, stock: Number(e.target.value) })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         required
                       />
                     </div>
@@ -693,7 +694,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                       rows={3}
                       value={productForm.description}
                       onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                       required
                       placeholder="Describe the craft, cultural significance, motifs, and unique handmade attributes..."
                     />
@@ -706,7 +707,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                         type="text"
                         value={productForm.materials}
                         onChange={(e) => setProductForm({ ...productForm, materials: e.target.value })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         placeholder="e.g. Pure Mulberry Silk, Natural Indigo, Brass"
                       />
                     </div>
@@ -716,7 +717,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                         type="text"
                         value={productForm.dimensions}
                         onChange={(e) => setProductForm({ ...productForm, dimensions: e.target.value })}
-                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         placeholder="e.g. 2.5 meters x 36 inches"
                       />
                     </div>
@@ -738,7 +739,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                           type="number"
                           value={productForm.materialsCost}
                           onChange={(e) => setProductForm({ ...productForm, materialsCost: Number(e.target.value) })}
-                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         />
                       </div>
                       <div>
@@ -747,7 +748,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                           type="number"
                           value={productForm.labourCost}
                           onChange={(e) => setProductForm({ ...productForm, labourCost: Number(e.target.value) })}
-                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         />
                       </div>
                       <div>
@@ -756,7 +757,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                           type="number"
                           value={productForm.overheadCost}
                           onChange={(e) => setProductForm({ ...productForm, overheadCost: Number(e.target.value) })}
-                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
+                          className="w-full p-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs focus:ring-1 focus:ring-[#244C3A] outline-none"
                         />
                       </div>
                     </div>
@@ -834,7 +835,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                     <input
                       type="number"
                       defaultValue={4800}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs outline-none focus:ring-1 focus:ring-[#244C3A]"
                     />
                   </div>
                   <div>
@@ -842,7 +843,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                     <input
                       type="number"
                       defaultValue={6500}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs outline-none focus:ring-1 focus:ring-[#244C3A]"
                     />
                   </div>
                 </div>
@@ -900,7 +901,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                     <input
                       type="text"
                       defaultValue={currentArtisan.studioName}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs outline-none focus:ring-1 focus:ring-[#244C3A]"
                     />
                   </div>
                   <div>
@@ -908,7 +909,7 @@ export const ArtisanDashboardPage: React.FC = () => {
                     <input
                       type="text"
                       defaultValue={currentArtisan.workshopLocation}
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-lg text-base sm:text-xs outline-none focus:ring-1 focus:ring-[#244C3A]"
                     />
                   </div>
                 </div>

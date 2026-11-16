@@ -182,12 +182,12 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
 
                 {/* Thumbnails row */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto pb-1 no-scrollbar">
                   {product.images.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImageIndex(idx)}
-                      className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                         selectedImageIndex === idx ? 'border-[#B85C38] shadow-xs' : 'border-[#E5DED3] opacity-70 hover:opacity-100'
                       }`}
                     >
@@ -196,9 +196,9 @@ export const ProductDetailPage: React.FC = () => {
                   ))}
                   <button
                     onClick={() => setActiveTab('3d-view')}
-                    className="w-20 h-20 rounded-xl border border-dashed border-[#B85C38] bg-[#FAF8F5] flex flex-col items-center justify-center text-[#B85C38] text-[11px] font-medium p-1 text-center hover:bg-[#F8F5EF]"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-dashed border-[#B85C38] bg-[#FAF8F5] flex flex-col items-center justify-center text-[#B85C38] text-[10px] sm:text-[11px] font-medium p-1 text-center hover:bg-[#F8F5EF] shrink-0 cursor-pointer"
                   >
-                    <Box className="w-5 h-5 mb-1" />
+                    <Box className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
                     <span>3D Model</span>
                   </button>
                 </div>
@@ -327,34 +327,52 @@ export const ProductDetailPage: React.FC = () => {
 
             {/* Quantity Selector and Purchase CTA */}
             <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border border-[#E5DED3] rounded-lg bg-white">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+                <div className="flex items-center justify-between sm:justify-start gap-2.5">
+                  <div className="flex items-center border border-[#E5DED3] rounded-lg bg-white shrink-0">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="px-3.5 py-2.5 text-sm font-semibold hover:bg-[#FAF8F5] cursor-pointer"
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2 text-sm font-semibold text-[#252722]">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="px-3.5 py-2.5 text-sm font-semibold hover:bg-[#FAF8F5] cursor-pointer"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Wishlist button on mobile sits next to quantity */}
                   <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-3.5 py-2.5 text-sm font-semibold hover:bg-[#FAF8F5]"
+                    onClick={() => toggleWishlist(product.id)}
+                    className={`sm:hidden p-3 rounded-lg border transition-colors cursor-pointer ${
+                      wishlisted
+                        ? 'bg-[#B85C38] border-[#B85C38] text-white'
+                        : 'bg-white border-[#E5DED3] text-[#252722] hover:text-[#B85C38]'
+                    }`}
+                    aria-label="Wishlist toggle"
                   >
-                    -
-                  </button>
-                  <span className="px-4 py-2 text-sm font-semibold text-[#252722]">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="px-3.5 py-2.5 text-sm font-semibold hover:bg-[#FAF8F5]"
-                  >
-                    +
+                    <Heart className={`w-5 h-5 ${wishlisted ? 'fill-current' : ''}`} />
                   </button>
                 </div>
 
                 <button
                   onClick={() => addToCart(product, quantity)}
-                  className="flex-1 bg-[#B85C38] hover:bg-[#9E4928] text-white py-3 px-6 rounded-lg font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#B85C38] hover:bg-[#9E4928] text-white py-3 px-5 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  <span>Add to Cart (₹{(product.price * quantity).toLocaleString('en-IN')})</span>
+                  <span>Add to Bag (₹{(product.price * quantity).toLocaleString('en-IN')})</span>
                 </button>
 
+                {/* Wishlist button on desktop sits next to Add to Cart */}
                 <button
                   onClick={() => toggleWishlist(product.id)}
-                  className={`p-3 rounded-lg border transition-colors ${
+                  className={`hidden sm:flex p-3 rounded-lg border transition-colors cursor-pointer ${
                     wishlisted
                       ? 'bg-[#B85C38] border-[#B85C38] text-white'
                       : 'bg-white border-[#E5DED3] text-[#252722] hover:text-[#B85C38]'
@@ -370,7 +388,7 @@ export const ProductDetailPage: React.FC = () => {
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#244C3A]" />
                   In Stock ({product.stockQuantity} available)
                 </span>
-                <span>Insured Craft Delivery across India</span>
+                <span>Insured Craft Delivery</span>
               </div>
             </div>
 

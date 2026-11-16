@@ -5,7 +5,7 @@ import logoImg from '../../assets/logo.jpg'
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#FAF8F5] border-t border-[#E5DED3] text-[#252722] pt-14 pb-10">
+    <footer className="bg-[#FAF8F5] border-t border-[#E5DED3] text-[#252722] pt-12 sm:pt-14 pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#E5DED3]">
           

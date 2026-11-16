@@ -239,7 +239,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder="Enter your email or phone"
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -263,7 +263,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full pl-10 pr-10 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                    className="w-full pl-10 pr-10 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                   />
                   <button
                     type="button"
@@ -324,7 +324,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Priyanshu Dash"
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -344,7 +344,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                       value={signUpEmail}
                       onChange={(e) => setSignUpEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                      className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -363,7 +363,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                      className="w-full pl-10 pr-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -383,7 +383,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     placeholder="Create a secure password"
-                    className="w-full pl-10 pr-10 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                    className="w-full pl-10 pr-10 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                   />
                   <button
                     type="button"
@@ -408,22 +408,22 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                     value={street}
                     onChange={(e) => setStreet(e.target.value)}
                     placeholder="Street Address / House No. / Landmark"
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
+                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] focus:ring-1 focus:ring-[#244C3A] outline-none transition-colors"
                   />
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <input
                       type="text"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="City / Town"
-                      className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] outline-none"
+                      className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] outline-none"
                     />
 
                     <select
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
-                      className="w-full px-2 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none truncate"
+                      className="w-full px-2 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] focus:bg-white focus:border-[#244C3A] outline-none truncate"
                     >
                       <option value="">District...</option>
                       {ALL_30_ODISHA_DISTRICTS.map((dist) => (
@@ -438,7 +438,7 @@ export const UserLoginPage: React.FC<UserLoginPageProps> = ({ defaultTab = 'sign
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
                       placeholder="PIN Code"
-                      className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] outline-none"
+                      className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:bg-white focus:border-[#244C3A] outline-none"
                     />
                   </div>
                 </div>

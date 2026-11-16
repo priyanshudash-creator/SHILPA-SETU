@@ -322,7 +322,7 @@ export const MarketplacePage: React.FC = () => {
             value={districtSearch}
             onChange={(e) => setDistrictSearch(e.target.value)}
             placeholder="Search all 30 districts..."
-            className="w-full pl-8 pr-3 py-1.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-md text-xs text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
+            className="w-full pl-8 pr-3 py-1.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-md text-base sm:text-xs text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
           />
         </div>
 
@@ -679,19 +679,19 @@ export const MarketplacePage: React.FC = () => {
             <div className="bg-white border border-[#E5DED3] rounded-2xl p-4 mb-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               
               {/* Live Search Bar */}
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-[#6B6A63]" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by craft, district, Odia master name (English / ଓଡ଼ିଆ)..."
-                  className="w-full pl-9 pr-8 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-sm text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
+                  placeholder="Search craft, district, master (English / ଓଡ଼ିଆ)..."
+                  className="w-full pl-9 pr-8 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-base sm:text-sm text-[#252722] placeholder:text-[#6B6A63] focus:outline-hidden focus:border-[#B85C38]"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-3 text-[#6B6A63] hover:text-[#252722]"
+                    className="absolute right-3 top-3 text-[#6B6A63] hover:text-[#252722] cursor-pointer"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -699,28 +699,28 @@ export const MarketplacePage: React.FC = () => {
               </div>
 
               {/* Sorting and Mobile Filter Trigger */}
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center justify-between sm:justify-end gap-2.5 sm:gap-3 shrink-0">
                 {/* Mobile Filter Toggle */}
                 <button
                   onClick={() => setMobileFiltersOpen(true)}
-                  className="lg:hidden flex items-center gap-2 px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E5DED3] rounded-xl text-xs font-semibold text-[#252722]"
+                  className="lg:hidden flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2.5 bg-[#FAF8F5] hover:bg-[#E5DED3]/40 border border-[#E5DED3] rounded-xl text-xs font-semibold text-[#244C3A] cursor-pointer active:scale-95"
                 >
                   <SlidersHorizontal className="w-4 h-4 text-[#B85C38]" />
                   <span>Filters</span>
                   {activeFilterCount > 0 && (
-                    <span className="w-5 h-5 rounded-full bg-[#B85C38] text-white text-[10px] flex items-center justify-center">
+                    <span className="w-4 h-4 rounded-full bg-[#B85C38] text-white text-[9px] font-bold flex items-center justify-center">
                       {activeFilterCount}
                     </span>
                   )}
                 </button>
 
                 {/* Sorting Select */}
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-1.5 text-xs">
                   <span className="text-[#6B6A63] hidden md:inline">Sort:</span>
                   <select
                     value={sortBy}
                     onChange={(e: any) => setSortBy(e.target.value)}
-                    className="bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-xl px-3 py-2.5 text-xs font-semibold focus:outline-hidden focus:border-[#B85C38]"
+                    className="bg-[#FAF8F5] border border-[#E5DED3] text-[#252722] rounded-xl px-2.5 sm:px-3 py-2.5 text-xs font-semibold focus:outline-hidden focus:border-[#B85C38] cursor-pointer"
                   >
                     <option value="featured">Featured Masterpieces</option>
                     <option value="price-low">Price: Low to High</option>
@@ -887,13 +887,13 @@ export const MarketplacePage: React.FC = () => {
 
       {/* Responsive Filter Drawer for Mobile */}
       {mobileFiltersOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden lg:hidden">
+        <div className="fixed inset-0 z-50 overflow-hidden lg:hidden animate-fadeIn">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => setMobileFiltersOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-sm bg-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+          <div className="fixed inset-y-0 right-0 max-w-full flex">
+            <div className="w-[88vw] sm:w-96 max-w-md bg-white p-5 sm:p-6 shadow-2xl flex flex-col justify-between overflow-y-auto safe-pb">
               <div>
                 <div className="flex items-center justify-between pb-4 border-b border-[#E5DED3] mb-6">
                   <h3 className="font-serif text-lg font-bold text-[#244C3A] flex items-center gap-2">
@@ -901,7 +901,7 @@ export const MarketplacePage: React.FC = () => {
                   </h3>
                   <button
                     onClick={() => setMobileFiltersOpen(false)}
-                    className="p-1.5 text-[#6B6A63] hover:text-[#252722]"
+                    className="p-1.5 text-[#6B6A63] hover:text-[#252722] cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -909,10 +909,10 @@ export const MarketplacePage: React.FC = () => {
                 <FilterContent />
               </div>
 
-              <div className="pt-6 border-t border-[#E5DED3] mt-6">
+              <div className="pt-5 border-t border-[#E5DED3] mt-6">
                 <button
                   onClick={() => setMobileFiltersOpen(false)}
-                  className="w-full bg-[#B85C38] text-white py-3 rounded-xl text-sm font-semibold shadow-xs"
+                  className="w-full bg-[#B85C38] hover:bg-[#9E4928] text-white py-3 rounded-xl text-sm font-semibold shadow-xs cursor-pointer active:scale-95"
                 >
                   Show {filteredArtifacts.length} Results
                 </button>

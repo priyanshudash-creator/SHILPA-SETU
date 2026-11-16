@@ -268,7 +268,7 @@ export const BecomeArtisanPage: React.FC = () => {
                     type="button"
                     key={i}
                     onClick={() => handleJumpToStep(i + 1)}
-                    className={`py-1.5 px-1 rounded transition-all cursor-pointer ${
+                    className={`py-1.5 px-0.5 sm:px-1 rounded transition-all cursor-pointer truncate ${
                       step === i + 1
                         ? 'bg-[#244C3A] text-white font-bold shadow-xs'
                         : step > i + 1
@@ -276,7 +276,8 @@ export const BecomeArtisanPage: React.FC = () => {
                         : 'text-[#6B6A63] hover:bg-[#FAF8F5]'
                     }`}
                   >
-                    {label}
+                    <span className="hidden sm:inline">{label}</span>
+                    <span className="sm:hidden">{['Personal', 'Craft', 'Proof', 'Item', 'Review'][i]}</span>
                   </button>
                 ))}
               </div>

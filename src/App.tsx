@@ -4,6 +4,7 @@ import { CartWishlistProvider } from './context/CartWishlistContext'
 import { ShilpaProvider } from './context/ShilpaContext'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
+import { MobileBottomNav } from './components/layout/MobileBottomNav'
 import { DemoNotice } from './components/common/DemoNotice'
 import { ShilpaChatDrawer } from './components/shilpa/ShilpaChatDrawer'
 import { ShilpaFloatingButton } from './components/shilpa/ShilpaFloatingButton'
@@ -57,11 +58,11 @@ function App() {
       <CartWishlistProvider>
         <ShilpaProvider>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-[#F8F5EF] text-[#252722]">
+          <div className="min-h-screen flex flex-col bg-[#F8F5EF] text-[#252722] overflow-x-hidden">
             <DemoNotice />
             <Navbar />
             
-            <div className="flex-1">
+            <div className="flex-1 pb-16 md:pb-0">
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
@@ -117,6 +118,7 @@ function App() {
             </div>
 
             <Footer />
+            <MobileBottomNav />
             <ShilpaFloatingButton />
             <ShilpaChatDrawer />
           </div>

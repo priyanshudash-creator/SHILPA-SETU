@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, MessageSquare } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useShilpa } from '../../context/ShilpaContext';
 import logoImg from '../../assets/logo.jpg';
 
@@ -9,10 +9,11 @@ export const ShilpaFloatingButton: React.FC = () => {
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 animate-fade-in">
+    // Hidden on mobile (< md) because mobile users have dedicated center button in MobileBottomNav
+    <div className="hidden md:block fixed bottom-6 right-6 z-40 animate-fade-in">
       <button
         onClick={toggleShilpa}
-        className="group flex items-center gap-2.5 pl-2 pr-4 py-2 rounded-full bg-[#FAF8F5] hover:bg-white text-[#244C3A] border-2 border-[#B85C38] shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+        className="group flex items-center gap-2.5 pl-2 pr-4 py-2 rounded-full bg-[#FAF8F5] hover:bg-white text-[#244C3A] border-2 border-[#B85C38] shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
         aria-label="Open SHILPA AI Craft Guide"
       >
         {/* Konark Wheel Logo Thumbnail */}

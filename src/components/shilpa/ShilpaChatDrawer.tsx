@@ -157,7 +157,7 @@ export const ShilpaChatDrawer: React.FC = () => {
       />
 
       {/* Slide-Over Drawer Container */}
-      <div className="relative w-full max-w-lg bg-[#FAF8F5] border-l border-[#E5DED3] shadow-2xl flex flex-col h-full z-10 text-[#252722]">
+      <div className="relative w-full max-w-lg bg-[#FAF8F5] border-l border-[#E5DED3] shadow-2xl flex flex-col h-full z-10 text-[#252722] safe-pb">
         
         {/* Header Bar */}
         <div className="px-5 py-3.5 bg-white border-b border-[#E5DED3] flex items-center justify-between shrink-0">
@@ -263,7 +263,7 @@ export const ShilpaChatDrawer: React.FC = () => {
                 placeholder="Search across 300+ crafts or districts..."
                 value={artifactSearchQuery}
                 onChange={e => setArtifactSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38]"
+                className="w-full pl-9 pr-3 py-1.5 text-base sm:text-xs rounded-lg border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38]"
               />
             </div>
 
@@ -368,7 +368,7 @@ export const ShilpaChatDrawer: React.FC = () => {
                 onChange={e => setInputMessage(e.target.value)}
                 placeholder={activeArtifact ? `Ask about ${activeArtifact.name}...` : "Ask SHILPA about materials, process, or pricing..."}
                 disabled={isTyping}
-                className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38] transition-colors text-[#252722] placeholder:text-[#78816A] disabled:opacity-50"
+                className="w-full pl-3.5 pr-10 py-2.5 text-base sm:text-sm rounded-xl border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38] transition-colors text-[#252722] placeholder:text-[#78816A] disabled:opacity-50"
               />
 
               {voiceSupported && (
