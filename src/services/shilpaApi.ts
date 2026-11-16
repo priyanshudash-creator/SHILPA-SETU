@@ -2,14 +2,103 @@
  * SHILPA AI CRAFT GUIDE — Client API Service
  * 
  * Communicates with backend endpoints at /api/shilpa/*.
- * Gracefully and seamlessly falls back to client-side grounded knowledge engine
- * when running offline, on static hosting (Vercel SPA), or when API server is unavailable.
+ * Gracefully and seamlessly falls back to:
+ * 1. Direct Groq API client call if VITE_GROQ_API_KEY is configured
+ * 2. Grounded local knowledge engine (Verified Odisha Records)
+ * Works 100% offline, on Vercel, and across all browsers.
  */
 
-import { ShilpaApiResponse, ShilpaStatusResponse, ShilpaArtifactContext } from '../types/shilpa';
-import { getLocalArtifacts, getLocalDeterministicAnswer } from './shilpaLocalRAG';
+import { ShilpaApiResponse, ShilpaStatusResponse, ShilpaArtifactContext, ShilpaSourceReference } from '../types/shilpa';
+import { getLocalArtifacts, getLocalDeterministicAnswer, resolveArtifactLocally } from './shilpaLocalRAG';
 
 export { getLocalArtifacts, filterArtifacts } from './shilpaLocalRAG';
+
+async function callGroqDirectly(
+  apiKey: string,
+  userMessage: string,
+  artifactId?: string,
+  conversationHistory: { role: 'user' | 'assistant'; content: string }[] = []
+): Promise<ShilpaApiResponse | null> {
+  const resolved = resolveArtifactLocally(artifactId);
+  let contextPrompt = 'No specific artifact is currently selected.';
+  let sources: ShilpaSourceReference[] = [
+    { title: 'Odisha Craft Dataset', url: '/marketplace', type: 'dataset' }
+  ];
+
+  if (resolved) {
+    if (resolved.type === 'curated_product') {
+      const p = resolved.item;
+      contextPrompt = `
+Artifact: ${p.name}
+Category: ${p.categoryId}
+District: ${p.district}, Odisha (${p.locality})
+Price: ₹${p.price.toLocaleString('en-IN')}
+Materials: ${p.materials.join(', ')}
+Breakdown: Materials ₹${p.priceBreakdown.materials}, Labour ₹${p.priceBreakdown.labour}, Overhead ₹${p.priceBreakdown.overhead}, Packaging ₹${p.priceBreakdown.packaging}, Distribution ₹${p.priceBreakdown.distribution}, Margin ₹${p.priceBreakdown.sellerMargin}.
+History: ${p.story}
+Stages: ${p.manufacturingStages.map(s => `Stage ${s.step}: ${s.title} - ${s.description}`).join('; ')}
+`.trim();
+      sources = [
+        { title: `${p.name} Digital Craft Passport`, url: `/passport/${p.id}`, type: 'digital_passport' },
+        { title: 'Odisha State Handloom Directorate Archive', url: 'https://crafts.odisha.gov.in', type: 'government_record' }
+      ];
+    } else {
+      const a = resolved.item;
+      contextPrompt = `
+Artifact: ${a.name}
+Category: ${a.category}
+District: ${a.district}, Odisha
+Price: ₹${a.priceMin}–₹${a.priceMax} ${a.priceUnit || 'per piece'}
+Materials: ${a.category}, ${a.specialNotes || 'Traditional craft materials'}
+Artisans: ${a.masterArtisans || 'Craft masters documented'}
+History: ${a.history}
+Note: A detailed cost breakdown is not available in the current records.
+`.trim();
+      sources = [
+        { title: `Odisha Artifact Registry (${a.district})`, url: `/marketplace?district=${encodeURIComponent(a.district)}`, type: 'official_odisha_dataset' }
+      ];
+    }
+  }
+
+  const prompt = `
+You are SHILPA, an AI Craft Guide for authentic Odisha handicrafts and handlooms.
+Answer the patron's question accurately using this verified record:
+${contextPrompt}
+
+Question: ${userMessage}
+Answer clearly and warmly. If price breakdown is not documented, explain the indicative price range and state that itemized cost breakdown is not documented. Never fabricate costs.
+`.trim();
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'openai/gpt-oss-120b',
+      messages: [
+        { role: 'system', content: 'You are SHILPA, an authoritative AI Craft Guide for authentic Odisha crafts.' },
+        ...conversationHistory.slice(-4),
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.2,
+      max_tokens: 600
+    })
+  });
+
+  if (!res.ok) return null;
+  const json = await res.json();
+  const text = json.choices?.[0]?.message?.content || '';
+  if (!text) return null;
+
+  return {
+    answer: text.replace(/\*\*/g, '').replace(/\|/g, ''),
+    sources,
+    limitations: resolved?.type === 'odisha_artifact' ? ['Detailed itemized cost breakdown is not documented in public records.'] : [],
+    modelUsed: 'openai/gpt-oss-120b (Live Groq Inference)'
+  };
+}
 
 export async function askShilpa(
   message: string,
@@ -18,6 +107,7 @@ export async function askShilpa(
 ): Promise<ShilpaApiResponse> {
   const cleanMessage = String(message || '').trim();
 
+  // 1. Try server endpoint first
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -45,10 +135,23 @@ export async function askShilpa(
       }
     }
   } catch (err: any) {
-    console.warn('[Shilpa API Client Note]: Backend chat endpoint unreachable, using grounded local craft knowledge engine.', err?.message);
+    console.warn('[Shilpa API Client Note]: Backend chat endpoint unreachable.', err?.message);
   }
 
-  // Resilient fallback: ground answer directly in verified Odisha craft records
+  // 2. Direct client Groq API call if VITE_GROQ_API_KEY is available
+  const clientKey = (import.meta.env.VITE_GROQ_API_KEY as string | undefined) || '';
+  if (clientKey && clientKey.startsWith('gsk_')) {
+    try {
+      const groqRes = await callGroqDirectly(clientKey, cleanMessage, artifactId, conversationHistory);
+      if (groqRes && groqRes.answer) {
+        return groqRes;
+      }
+    } catch (e: any) {
+      console.warn('[Shilpa Direct Groq Note]: Direct Groq call fallback.', e?.message);
+    }
+  }
+
+  // 3. Resilient fallback: ground answer directly in verified Odisha craft records
   return getLocalDeterministicAnswer(artifactId, cleanMessage);
 }
 
@@ -67,12 +170,14 @@ export async function getShilpaStatus(): Promise<ShilpaStatusResponse | null> {
     // Graceful fallback
   }
 
+  const clientKey = (import.meta.env.VITE_GROQ_API_KEY as string | undefined) || '';
+
   return {
     status: 'ok',
     assistant: 'SHILPA (AI Craft Guide)',
     tagline: 'Ask SHILPA. Discover the Story Behind Every Craft.',
-    groqConfigured: false,
-    activeModel: 'grounded-craft-knowledge (Verified Odisha Records)',
+    groqConfigured: Boolean(clientKey && clientKey.startsWith('gsk_')),
+    activeModel: clientKey ? 'openai/gpt-oss-120b (Live Groq)' : 'grounded-craft-knowledge (Verified Odisha Records)',
     environment: 'client'
   };
 }
