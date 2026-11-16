@@ -2,61 +2,109 @@
  * SHILPA AI CRAFT GUIDE — Client API Service
  * 
  * Communicates with backend endpoints at /api/shilpa/*.
- * Does not expose GROQ_API_KEY to the browser.
+ * Gracefully and seamlessly falls back to client-side grounded knowledge engine
+ * when running offline, on static hosting (Vercel SPA), or when API server is unavailable.
  */
 
 import { ShilpaApiResponse, ShilpaStatusResponse, ShilpaArtifactContext } from '../types/shilpa';
+import { getLocalArtifacts, getLocalDeterministicAnswer } from './shilpaLocalRAG';
+
+export { getLocalArtifacts, filterArtifacts } from './shilpaLocalRAG';
 
 export async function askShilpa(
   message: string,
   artifactId?: string,
   conversationHistory: { role: 'user' | 'assistant'; content: string }[] = []
 ): Promise<ShilpaApiResponse> {
+  const cleanMessage = String(message || '').trim();
+
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     const response = await fetch('/api/shilpa/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message,
+        message: cleanMessage,
         artifactId,
         conversationHistory: conversationHistory.slice(-6)
-      })
+      }),
+      signal: controller.signal
     });
 
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error || `Server responded with status ${response.status}`);
-    }
+    clearTimeout(timeoutId);
 
-    const data: ShilpaApiResponse = await response.json();
-    return data;
+    const contentType = response.headers.get('content-type') || '';
+    if (response.ok && contentType.includes('application/json')) {
+      const data: ShilpaApiResponse = await response.json();
+      if (data && data.answer) {
+        return data;
+      }
+    }
   } catch (err: any) {
-    console.error('[Shilpa API Client Error]:', err);
-    throw new Error(err.message || 'Unable to connect to SHILPA assistant service.');
+    console.warn('[Shilpa API Client Note]: Backend chat endpoint unreachable, using grounded local craft knowledge engine.', err?.message);
   }
+
+  // Resilient fallback: ground answer directly in verified Odisha craft records
+  return getLocalDeterministicAnswer(artifactId, cleanMessage);
 }
 
 export async function getShilpaStatus(): Promise<ShilpaStatusResponse | null> {
   try {
-    const response = await fetch('/api/shilpa/status');
-    if (!response.ok) return null;
-    return await response.json();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch('/api/shilpa/status', { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type') || '';
+    if (response.ok && contentType.includes('application/json')) {
+      return await response.json();
+    }
   } catch {
-    return null;
+    // Graceful fallback
   }
+
+  return {
+    status: 'ok',
+    assistant: 'SHILPA (AI Craft Guide)',
+    tagline: 'Ask SHILPA. Discover the Story Behind Every Craft.',
+    groqConfigured: false,
+    activeModel: 'grounded-craft-knowledge (Verified Odisha Records)',
+    environment: 'client'
+  };
 }
 
 export async function getAvailableArtifacts(): Promise<ShilpaArtifactContext[]> {
+  const localList = getLocalArtifacts();
+
   try {
-    const response = await fetch('/api/shilpa/artifacts');
-    if (!response.ok) return [];
-    const data = await response.json();
-    return data.artifacts || [];
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch('/api/shilpa/artifacts', { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type') || '';
+    if (response.ok && contentType.includes('application/json')) {
+      const data = await response.json();
+      if (Array.isArray(data.artifacts) && data.artifacts.length > 0) {
+        // Hydrate server artifacts with local images if missing
+        return data.artifacts.map((sa: ShilpaArtifactContext) => {
+          if (!sa.image) {
+            const localMatch = localList.find(l => l.id === sa.id);
+            if (localMatch?.image) sa.image = localMatch.image;
+          }
+          return sa;
+        });
+      }
+    }
   } catch {
-    return [];
+    // Seamless fallback to local dataset
   }
+
+  return localList;
 }
 
 /**

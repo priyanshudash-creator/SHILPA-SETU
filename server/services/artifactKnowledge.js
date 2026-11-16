@@ -676,6 +676,7 @@ export function getAllArtifactsSummary() {
     category: p.categoryId,
     district: p.district,
     priceDisplay: `₹${p.price.toLocaleString('en-IN')}`,
+    priceRange: `₹${p.price.toLocaleString('en-IN')}`,
     hasBreakdown: true,
     isCurated: true
   }));
@@ -687,6 +688,8 @@ export function getAllArtifactsSummary() {
     category: a.category,
     district: a.district,
     priceDisplay: `₹${a.priceMin}–₹${a.priceMax}`,
+    priceRange: `₹${a.priceMin}–₹${a.priceMax} ${a.priceUnit || 'per piece'}`,
+    image: a.image || '',
     hasBreakdown: false,
     isCurated: false
   }));

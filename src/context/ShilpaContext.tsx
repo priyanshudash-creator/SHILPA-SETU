@@ -48,7 +48,9 @@ export const ShilpaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return {
       id: 'welcome-msg',
       role: 'assistant',
-      content: INITIAL_WELCOME_TEXT,
+      content: artifact
+        ? `Namaste! I'm SHILPA, your AI Craft Guide. Ask me about **${artifact.name}** (${artifact.district} District) — its materials, traditional making process, cultural significance, or documented pricing.`
+        : INITIAL_WELCOME_TEXT,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       suggestedQuestions: getArtifactSuggestedQuestions(artifact)
     };
@@ -105,7 +107,24 @@ export const ShilpaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const setActiveArtifact = useCallback((artifact: ShilpaArtifactContext | null) => {
     setActiveArtifactState(artifact);
-  }, []);
+    setMessages(prev => {
+      if (prev.length <= 1) {
+        return [createInitialMessage(artifact)];
+      }
+      return [
+        ...prev,
+        {
+          id: `artifact-switch-${Date.now()}`,
+          role: 'assistant',
+          content: artifact 
+            ? `I have updated my guide context to **${artifact.name}** (${artifact.district} District). Ask me about its materials, traditional process, or declared price.`
+            : `I have cleared the active artifact context. Ask me anything about Odisha's craft traditions!`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          suggestedQuestions: getArtifactSuggestedQuestions(artifact)
+        }
+      ];
+    });
+  }, [createInitialMessage]);
 
   const clearChat = useCallback(() => {
     setMessages([createInitialMessage(activeArtifact)]);

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useShilpa } from '../../context/ShilpaContext';
 import { ShilpaMessageBubble } from './ShilpaMessageBubble';
-import { getAvailableArtifacts } from '../../services/shilpaApi';
+import { getAvailableArtifacts, getLocalArtifacts, filterArtifacts } from '../../services/shilpaApi';
 import { ShilpaArtifactContext } from '../../types/shilpa';
 import logoImg from '../../assets/logo.jpg';
 
@@ -42,12 +42,13 @@ export const ShilpaChatDrawer: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(true);
   const [showArtifactPicker, setShowArtifactPicker] = useState(false);
-  const [artifactList, setArtifactList] = useState<ShilpaArtifactContext[]>([]);
+  const [artifactList, setArtifactList] = useState<ShilpaArtifactContext[]>(() => getLocalArtifacts());
   const [artifactSearchQuery, setArtifactSearchQuery] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll on messages change
   useEffect(() => {
@@ -56,12 +57,21 @@ export const ShilpaChatDrawer: React.FC = () => {
     }
   }, [messages, isTyping, isOpen]);
 
-  // Load available artifacts for switching
+  // Load / sync available artifacts from API if accessible
   useEffect(() => {
-    if (showArtifactPicker && artifactList.length === 0) {
-      getAvailableArtifacts().then(setArtifactList);
+    getAvailableArtifacts().then(list => {
+      if (list && list.length > 0) {
+        setArtifactList(list);
+      }
+    });
+  }, []);
+
+  // Auto-focus search input when picker opens
+  useEffect(() => {
+    if (showArtifactPicker) {
+      setTimeout(() => searchInputRef.current?.focus(), 120);
     }
-  }, [showArtifactPicker, artifactList.length]);
+  }, [showArtifactPicker]);
 
   // Focus input when opened
   useEffect(() => {
@@ -137,15 +147,29 @@ export const ShilpaChatDrawer: React.FC = () => {
   const handleSelectArtifact = (artifact: ShilpaArtifactContext) => {
     setActiveArtifact(artifact);
     setShowArtifactPicker(false);
+    setArtifactSearchQuery('');
+  };
+
+  const handleClearArtifact = () => {
+    setActiveArtifact(null);
+    setShowArtifactPicker(false);
+    setArtifactSearchQuery('');
+  };
+
+  const handleTogglePicker = () => {
+    setShowArtifactPicker(prev => {
+      if (prev) setArtifactSearchQuery('');
+      return !prev;
+    });
   };
 
   if (!isOpen) return null;
 
-  const filteredArtifacts = artifactList.filter(a =>
-    a.name.toLowerCase().includes(artifactSearchQuery.toLowerCase()) ||
-    a.category.toLowerCase().includes(artifactSearchQuery.toLowerCase()) ||
-    a.district.toLowerCase().includes(artifactSearchQuery.toLowerCase())
-  );
+  const filteredArtifacts = filterArtifacts(artifactList, artifactSearchQuery);
+  const isSearching = artifactSearchQuery.trim().length > 0;
+  const displayedArtifacts = isSearching
+    ? filteredArtifacts
+    : filteredArtifacts.slice(0, 30);
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden flex justify-end animate-fade-in">
@@ -246,7 +270,7 @@ export const ShilpaChatDrawer: React.FC = () => {
           )}
 
           <button
-            onClick={() => setShowArtifactPicker(!showArtifactPicker)}
+            onClick={handleTogglePicker}
             className="text-[11px] font-semibold text-[#B85C38] hover:text-[#9E4928] px-2.5 py-1 rounded-md border border-[#B85C38]/30 bg-white/80 hover:bg-white shrink-0 transition-colors"
           >
             {showArtifactPicker ? 'Close Picker' : 'Switch Craft'}
@@ -255,24 +279,50 @@ export const ShilpaChatDrawer: React.FC = () => {
 
         {/* Artifact Switcher Dropdown Modal */}
         {showArtifactPicker && (
-          <div className="p-4 bg-white border-b border-[#E5DED3] space-y-3 shrink-0 max-h-64 overflow-y-auto animate-fade-in shadow-inner">
+          <div className="p-4 bg-white border-b border-[#E5DED3] space-y-3 shrink-0 max-h-80 overflow-y-auto animate-fade-in shadow-inner">
             <div className="relative">
               <Search className="w-4 h-4 text-[#78816A] absolute left-3 top-2.5" />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search across 300+ crafts or districts..."
                 value={artifactSearchQuery}
                 onChange={e => setArtifactSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-base sm:text-xs rounded-lg border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38]"
+                className="w-full pl-9 pr-8 py-1.5 text-base sm:text-xs rounded-lg border border-[#E5DED3] bg-[#FAF8F5] focus:outline-none focus:border-[#B85C38] transition-colors"
               />
+              {artifactSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setArtifactSearchQuery('')}
+                  className="absolute right-2.5 top-2.5 p-0.5 text-[#78816A] hover:text-[#252722] rounded-full transition-colors"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Results count & reset */}
+            <div className="flex items-center justify-between text-[11px] text-[#78816A] px-1">
+              <span>
+                {isSearching
+                  ? `Found ${filteredArtifacts.length} craft${filteredArtifacts.length === 1 ? '' : 's'}`
+                  : `Showing ${displayedArtifacts.length} of ${artifactList.length} Odisha crafts`}
+              </span>
+              {isSearching && (
+                <button
+                  type="button"
+                  onClick={() => setArtifactSearchQuery('')}
+                  className="text-[#B85C38] hover:underline font-medium text-[11px]"
+                >
+                  Show all
+                </button>
+              )}
             </div>
 
             <div className="space-y-1">
               <button
-                onClick={() => {
-                  setActiveArtifact(null);
-                  setShowArtifactPicker(false);
-                }}
+                onClick={handleClearArtifact}
                 className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
                   !activeArtifact ? 'bg-[#244C3A] text-white' : 'hover:bg-[#FAF8F5] text-[#252722]'
                 }`}
@@ -281,27 +331,57 @@ export const ShilpaChatDrawer: React.FC = () => {
                 {!activeArtifact && <ShieldCheck className="w-3.5 h-3.5 text-white" />}
               </button>
 
-              {filteredArtifacts.slice(0, 15).map(art => (
+              {displayedArtifacts.map(art => (
                 <button
                   key={art.id}
                   onClick={() => handleSelectArtifact(art)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between gap-2.5 transition-colors ${
                     activeArtifact?.id === art.id
                       ? 'bg-[#244C3A] text-white font-bold'
                       : 'hover:bg-[#FAF8F5] text-[#252722]'
                   }`}
                 >
-                  <div className="truncate pr-2">
-                    <span className="block truncate">{art.name}</span>
-                    <span className={`text-[10px] ${activeArtifact?.id === art.id ? 'text-white/80' : 'text-[#6B6A63]'}`}>
-                      {art.district} District • {art.category}
-                    </span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    {art.image && (
+                      <img
+                        src={art.image}
+                        alt={art.name}
+                        className="w-8 h-8 rounded-md object-cover shrink-0 border border-[#E5DED3]"
+                        loading="lazy"
+                        onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                      />
+                    )}
+                    <div className="truncate min-w-0">
+                      <span className="block truncate font-medium">{art.name}</span>
+                      <span className={`text-[10px] truncate block ${activeArtifact?.id === art.id ? 'text-white/80' : 'text-[#6B6A63]'}`}>
+                        {art.district} District • {art.category}
+                      </span>
+                    </div>
                   </div>
                   <span className={`text-[10px] font-mono shrink-0 ${activeArtifact?.id === art.id ? 'text-white' : 'text-[#B85C38]'}`}>
-                    {art.priceDisplay}
+                    {art.priceDisplay || art.priceRange}
                   </span>
                 </button>
               ))}
+
+              {/* Empty search state */}
+              {filteredArtifacts.length === 0 && (
+                <div className="py-6 text-center text-[#78816A] px-4 bg-[#FAF8F5] rounded-lg mt-2">
+                  <p className="text-xs font-semibold text-[#252722]">
+                    No crafts found matching "{artifactSearchQuery}"
+                  </p>
+                  <p className="text-[11px] text-[#6B6A63] mt-1">
+                    Try searching for craft types (Pattachitra, Sambalpuri, Dhokra, Filigree) or districts (Puri, Sambalpur, Koraput, Cuttack).
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setArtifactSearchQuery('')}
+                    className="mt-2.5 text-xs text-[#B85C38] font-medium underline hover:text-[#9E4928]"
+                  >
+                    Clear search and view all crafts
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
